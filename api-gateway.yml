@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+
+      # USE EUREKA DISCOVERY FOR ROUTING
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+
+        # TASK SERVICE
+        - id: task-service
+          uri: lb://task-service
+          predicates:
+            - Path=/api/tasks, /api/tasks/**
+          filters:
+            - StripPrefix=0
+
+        # Rule Service
+        - id: rule-service
+          uri: lb://rule-service
+          predicates:
+              - Path=/api/rules, /api/rules/**
+          filters:
+            - StripPrefix=0
+
+        # Automation Service
+        - id: automation-service
+          uri: lb://automation-service
+          predicates:
+            - Path=/api/automation/**
+          filters:
+            - StripPrefix=0
+
+        # NOTIFICATION SERVICE
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/send
+          filters:
+            - StripPrefix=0
+
+      # OPTIONAL: GLOBAL CORS (FOR REACT/REACT NATIVE)
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
