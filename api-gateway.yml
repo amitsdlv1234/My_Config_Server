@@ -15,19 +15,12 @@ spring:
           lower-case-service-id: true
 
       routes:
-        # Auth SERVICE
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=0
             
         # TASK SERVICE
         - id: task-service
           uri: lb://task-service
           predicates:
-            - Path=/api/tasks, /api/tasks/**
+            - Path=/api/tasks,/api/tasks/**
           filters:
             - StripPrefix=0
 
@@ -35,7 +28,7 @@ spring:
         - id: rule-service
           uri: lb://rule-service
           predicates:
-              - Path=/api/rules, /api/rules/**
+              - Path=/api/rules,/api/rules/**
           filters:
             - StripPrefix=0
 
